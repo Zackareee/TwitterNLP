@@ -12,6 +12,7 @@ var Analyzer = require('natural').SentimentAnalyzer;
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var twitterRouter = require('./routes/twitter');
 
 var app = express();
 
@@ -27,14 +28,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/twitter',twitterRouter);
 
 
 
-const API_KEY = "BPyJmUkYDkIVh4FWtsM1Sn2RJ";
-
-const SECRET = "cWHTC7Gf9W7BNmYaRLfazkuwVLUSKIoIOzRsaxiQJpSk4ptPQe";
-
-const TOKEN = "AAAAAAAAAAAAAAAAAAAAAC7LUgEAAAAAb7O5rUKmJ0ryGMn%2Bdo879G8Ur4E%3DzgI99rheUmOefRyBbKll8tnY9oG6ExZUGhtBkyWi9XOfxctIjk";
 
 
 
@@ -60,7 +57,11 @@ var analyzer = new Analyzer("English", stemmer, "afinn");
 
 
 // getSentiment expects an array of strings
-let sentence = "this product sucks";
+let sentence = `We’re making progress in the fight against COVID-19.
+ 
+Daily cases are down 47% and hospitalizations are down 38%, case rates are declining in 39 states, and we’re down to 66 million unvaccinated people.
+ 
+We’re in a critical period as we work to turn a corner on COVID-19.`;
 
 let words = sentence.split(" ");
 //tokenizer doenst work
