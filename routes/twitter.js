@@ -8,7 +8,7 @@ var stemmer = require('natural').PorterStemmer;
 var natural = require('natural');
 var Analyzer = require('natural').SentimentAnalyzer;
 
-
+//use version 2
 
 router.get("/tweet", async function (req, res, next) {
     console.log("amogus")
@@ -34,23 +34,49 @@ router.get("/tweet", async function (req, res, next) {
     var tokenizer = new natural.WordTokenizer();
     var analyzer = new Analyzer("English", stemmer, "afinn");
 
-    // getSentiment expects an array of strings
-    let sentence = `${tweets.data[0].text}`;
-
-    let words = sentence.split(" ");
-    //tokenizer doenst work
-
-    console.log(words);
-
-    let sentiment = analyzer.getSentiment(words);
-
-    tweets.data[0].NewPropertyName = "sentiment";     //change 0 to index for multiple tweets
-    tweets.data[0].sentiment = sentiment;
-
-    console.log(analyzer.getSentiment(words));
 
 
-    res.render("twitter", { tweetObj: tweets});
+
+    let chartObj = {Great: 0, Good: 0, Neutral: 0, Bad: 0, Terrible: 0};
+
+
+    for (i in tweets.data) {
+        // getSentiment expects an array of strings
+        let sentence = `${tweets.data[i].text}`;
+
+        let words = sentence.split(" ");
+        console.log(words);
+        //tokenizer doenst work
+
+        let sentiment = analyzer.getSentiment(words);
+        
+        if (sentiment > 2){
+            chartObj.Great++;
+        }
+        else if (sentiment < 2 && sentiment > 0){
+            chartObj.Good++;
+        }
+        else if (sentiment == 0){
+            chartObj.Neutral++;
+        }
+        else if (sentiment < 0 && sentiment > -2){
+            chartObj.Bad++;
+        }
+        else if (sentiment < -2){
+            chartObj.Terrible++;
+        }
+
+        tweets.data[i].NewPropertyName = "sentiment";     //change 0 to index for multiple tweets
+        tweets.data[i].sentiment = sentiment;
+
+        console.log(analyzer.getSentiment(words));
+        
+    }
+
+    
+    console.log(chartObj);
+
+    res.render("twitter", { tweetObj: tweets }, {chartData: chartObj});
 
 })
 
