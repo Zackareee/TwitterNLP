@@ -4,10 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-//Natural
-var stemmer = require('natural').PorterStemmer;
-var natural = require('natural');
-var Analyzer = require('natural').SentimentAnalyzer;
+
 
 
 var indexRouter = require('./routes/index');
@@ -51,24 +48,11 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-var tokenizer = new natural.WordTokenizer();
-var analyzer = new Analyzer("English", stemmer, "afinn");
 
 
 
-// getSentiment expects an array of strings
-let sentence = `We’re making progress in the fight against COVID-19.
- 
-Daily cases are down 47% and hospitalizations are down 38%, case rates are declining in 39 states, and we’re down to 66 million unvaccinated people.
- 
-We’re in a critical period as we work to turn a corner on COVID-19.`;
 
-let words = sentence.split(" ");
-//tokenizer doenst work
 
-console.log(words)
-
-console.log(analyzer.getSentiment(words));
 
 
  

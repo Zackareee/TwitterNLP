@@ -1,0 +1,13 @@
+h1 HELLO WORLD
+
+p#tweetDisplay tweets go here 
+h1 !{tweetObj.data[0].text}
+script.
+    let tweets = !{JSON.stringify(tweetObj)};
+    console.log(tweets);
+    console.log(tweets.data[0].sentiment)
+    
+    
+
+
+

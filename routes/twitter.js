@@ -2,6 +2,14 @@ var express = require("express");
 var router = express.Router();
 const axios = require("axios");
 
+
+//Natural
+var stemmer = require('natural').PorterStemmer;
+var natural = require('natural');
+var Analyzer = require('natural').SentimentAnalyzer;
+
+
+
 router.get("/tweet", async function (req, res, next) {
     console.log("amogus")
     const { query } = req.params;
@@ -23,7 +31,26 @@ router.get("/tweet", async function (req, res, next) {
 
     console.log(tweets);
 
+    var tokenizer = new natural.WordTokenizer();
+    var analyzer = new Analyzer("English", stemmer, "afinn");
 
+    // getSentiment expects an array of strings
+    let sentence = `${tweets.data[0].text}`;
+
+    let words = sentence.split(" ");
+    //tokenizer doenst work
+
+    console.log(words);
+
+    let sentiment = analyzer.getSentiment(words);
+
+    tweets.data[0].NewPropertyName = "sentiment";     //change 0 to index for multiple tweets
+    tweets.data[0].sentiment = sentiment;
+
+    console.log(analyzer.getSentiment(words));
+
+
+    res.render("twitter", { tweetObj: tweets});
 
 })
 
