@@ -76,19 +76,19 @@ router.get("/:query/:qty?", async function (req, res, next) {
 
         let sentiment = analyzer.getSentiment(words);
 
-        if (sentiment > 2) {
+        if (sentiment > 0.2) {
             chartObj.Great++;
         }
-        else if (sentiment < 2 && sentiment > 0) {
+        else if (sentiment < 0.2 && sentiment > 0) {
             chartObj.Good++;
         }
         else if (sentiment == 0) {
             chartObj.Neutral++;
         }
-        else if (sentiment < 0 && sentiment > -2) {
+        else if (sentiment < 0 && sentiment > -0.2) {
             chartObj.Bad++;
         }
-        else if (sentiment < -2) {
+        else if (sentiment < -0.2) {
             chartObj.Terrible++;
         }
 
