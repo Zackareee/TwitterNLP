@@ -18,19 +18,23 @@ router.get("/:query", async function (req, res, next) {
     const TOKEN = "AAAAAAAAAAAAAAAAAAAAAC7LUgEAAAAAb7O5rUKmJ0ryGMn%2Bdo879G8Ur4E%3DzgI99rheUmOefRyBbKll8tnY9oG6ExZUGhtBkyWi9XOfxctIjk";
     const TWITTER_ENDPOINT = "https://api.twitter.com/2/tweets/search/recent";
 
-    const search = query;
-    const test_endpoint = `https://api.twitter.com/2/tweets/search/recent?query=from:${search}&tweet.fields=created_at&expansions=author_id&user.fields=created_at&max_results=10`;
+    // validate query 
+    if( !query.match("^[a-zA-Z0-9_]*$")){
+        return res.render("error");
+    }
+
+    const endpoint = `https://api.twitter.com/2/tweets/search/recent?query=from:${query}&tweet.fields=created_at&expansions=author_id&user.fields=created_at&max_results=10`;
 
 
     let tweets = await axios
-        .get(test_endpoint, {
+        .get(endpoint, {
             headers: {
                 "Authorization": `Bearer ${TOKEN}`
             }
         })
         .then((res) => res.data)
         .catch((error)=>{
-            console.log(error + ": error found")
+            console.log(error + ": probably search term not found")
             res.render("error")
         })
 
@@ -83,11 +87,8 @@ router.get("/:query", async function (req, res, next) {
 
     }
 
-
     console.log(chartObj);
-
     res.render("twitter", { tweetObj: tweets, chartData: chartObj });
-
 })
 
 module.exports = router;
