@@ -1,3 +1,29 @@
+head
+  meta(charset='utf-8')
+  title Cab432 A2
+  link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We' crossorigin='anonymous')
+
+.container
+  .row
+    .col-md
+      .input-group
+        .form-outline
+          p Search by twitter handle
+          input#search-input.form-control(type='search') 
+          p Return quantity
+          input#qty-input.form-control(type='search' placeholder='10')
+          button#search-button.btn.btn-primary(type='button')
+            | Search
+
+script.
+  const searchButton = document.getElementById('search-button');
+      const searchInput = document.getElementById('search-input');
+      const qtyInput = document.getElementById('qty-input');
+      searchButton.addEventListener('click', () => {
+      const inputValue = searchInput.value;
+      const qtyValue = qtyInput.value;
+      window.location.href = ("/twitter/" + inputValue + "/" + qtyValue)
+      });
 
 script(src ="https://cdn.jsdelivr.net/npm/chart.js")
 div
