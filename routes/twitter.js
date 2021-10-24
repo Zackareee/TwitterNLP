@@ -10,20 +10,34 @@ var Analyzer = require('natural').SentimentAnalyzer;
 
 //use version 2
 
-router.get("/:query", async function (req, res, next) {
+router.get("/:query/:qty?", async function (req, res, next) {
     console.log("amogus")
-    const { query } = req.params;
+    let { query, qty } = req.params;
+    
     const API_KEY = "BPyJmUkYDkIVh4FWtsM1Sn2RJ"
     const SECRET = "cWHTC7Gf9W7BNmYaRLfazkuwVLUSKIoIOzRsaxiQJpSk4ptPQe";
     const TOKEN = "AAAAAAAAAAAAAAAAAAAAAC7LUgEAAAAAb7O5rUKmJ0ryGMn%2Bdo879G8Ur4E%3DzgI99rheUmOefRyBbKll8tnY9oG6ExZUGhtBkyWi9XOfxctIjk";
     const TWITTER_ENDPOINT = "https://api.twitter.com/2/tweets/search/recent";
 
-    // validate query 
+    console.log("qty: " + qty)
+    // validation
     if( !query.match("^[a-zA-Z0-9_]*$")){
         return res.render("error");
     }
 
-    const endpoint = `https://api.twitter.com/2/tweets/search/recent?query=from:${query}&tweet.fields=created_at&expansions=author_id&user.fields=created_at&max_results=10`;
+    if (!qty){
+        qty = 10;
+        
+    }
+
+    if(qty < 10){
+        qty = 10;
+    }
+    else if (qty > 100){
+        qty = 100;
+    }
+
+    const endpoint = `https://api.twitter.com/2/tweets/search/recent?query=from:${query}&tweet.fields=created_at&expansions=author_id&user.fields=created_at&max_results=${qty}`;
 
 
     let tweets = await axios

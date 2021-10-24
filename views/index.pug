@@ -9,14 +9,19 @@ head
     .col-md
       .input-group
         .form-outline
-          input#search-input.form-control(type='search')
+          p Search by twitter handle
+          input#search-input.form-control(type='search') 
+          p Return quantity
+          input#qty-input.form-control(type='search' placeholder='100')
           button#search-button.btn.btn-primary(type='button')
             | Search
 
 script.
   const searchButton = document.getElementById('search-button');
       const searchInput = document.getElementById('search-input');
+      const qtyInput = document.getElementById('qty-input');
       searchButton.addEventListener('click', () => {
       const inputValue = searchInput.value;
-      window.location.href = ("/twitter/" + inputValue)
+      const qtyValue = qtyInput.value;
+      window.location.href = ("/twitter/" + inputValue + "/" + qtyValue)
       });
