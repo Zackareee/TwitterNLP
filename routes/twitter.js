@@ -79,13 +79,13 @@ router.get("/:query/:qty?", async function (req, res, next) {
         if (sentiment > 0.2) {
             chartObj.Great++;
         }
-        else if (sentiment < 0.2 && sentiment > 0) {
+        else if (sentiment < 0.2 && sentiment > 0.05) {
             chartObj.Good++;
         }
-        else if (sentiment == 0) {
+        else if (sentiment > -0.05 && sentiment < 0.05) {
             chartObj.Neutral++;
         }
-        else if (sentiment < 0 && sentiment > -0.2) {
+        else if (sentiment < -0.05 && sentiment > -0.2) {
             chartObj.Bad++;
         }
         else if (sentiment < -0.2) {
