@@ -1,6 +1,28 @@
-extends layout
 
-block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+
+
+
+head
+  meta(charset='utf-8')
+  title Cab432 A1
+  link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We' crossorigin='anonymous')
+
+
+.container
+  .row
+    h1 Sorry your search term couldn't be found.
+    p Try again:
+    .col-12
+      .input-group
+        .form-outline
+          input#search-input.form-control(type='search')
+          button#search-button.btn.btn-primary(type='button')
+            | Search
+
+script.
+  const searchButton = document.getElementById('search-button');
+      const searchInput = document.getElementById('search-input');
+      searchButton.addEventListener('click', () => {
+      const inputValue = searchInput.value;
+      window.location.href = ("/twitter/" + inputValue)
+      });
