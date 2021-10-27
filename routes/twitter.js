@@ -7,22 +7,20 @@ const redis = require('redis');
 //Natural
 var stemmer = require('natural').PorterStemmer;
 var natural = require('natural');
+var tokenizer = new natural.WordTokenizer();
 var Analyzer = require('natural').SentimentAnalyzer;
 
 
 function generateChartData(tweets, chartObj) {
 
     var analyzer = new Analyzer("English", stemmer, "afinn");
-
+    
+    
     for (i in tweets.data) {
         // getSentiment expects an array of strings
         let sentence = `${tweets.data[i].text}`;
+        let sentiment = analyzer.getSentiment(tokenizer.tokenize(sentence));
 
-        let words = sentence.split(" ");
-        //console.log(words);
-        //tokenizer doenst work
-
-        let sentiment = analyzer.getSentiment(words);
 
         if (sentiment > 0.2) {
             chartObj.Great++;
@@ -40,9 +38,8 @@ function generateChartData(tweets, chartObj) {
             chartObj.Terrible++;
         }
 
-        tweets.data[i].NewPropertyName = "sentiment";     //change 0 to index for multiple tweets
         tweets.data[i].sentiment = sentiment;
-
+        tweets.data[i].label = 'Fully Rounded';
         //console.log(analyzer.getSentiment(words));
     }
 }
@@ -92,7 +89,18 @@ router.get("/:query/:qty?", async function (req, res, next) {
             const resultJSON = JSON.parse(result);
             tweets = resultJSON;
             generateChartData(tweets, chartObj);
-            res.render("twitter", { tweetObj: tweets, chartData: chartObj });
+            let texts = 0;
+            let loops = 0;
+            if (tweets.data) {
+                for (loops; loops < tweets.data.length; loops++) {
+                    texts += tweets.data[loops].sentiment;
+                }   
+                console.log(texts)
+                texts= (texts/loops)*100
+                console.log(texts)
+            }
+            
+            res.render("dashboard", { tweetObj: tweets, chartData: chartObj, path:query, average:texts});
 
         } else {
 
@@ -119,7 +127,18 @@ router.get("/:query/:qty?", async function (req, res, next) {
                     console.log(chartObj);
 
                     //display page
-                    res.render("twitter", { tweetObj: tweets, chartData: chartObj });
+                    let texts = 0;
+                    let loops = 0;
+                    if (tweets.data) {
+                        for (loops; loops < tweets.data.length; loops++) {
+                            texts += tweets.data[loops].sentiment;
+                        }   
+                        console.log(texts)
+                        texts= (texts/loops)*100
+                        console.log(texts)
+                    }
+                    
+                    res.render("dashboard", { tweetObj: tweets, chartData: chartObj, path:query, average:texts});
 
                     //********CODE STOPS HERE******** */
                 })
