@@ -48,7 +48,6 @@ function generateChartData(tweets, chartObj) {
 }
 
 
-
 router.get("/:query/:qty?", async function (req, res, next) {
 
     let chartObj = { Great: 0, Good: 0, Neutral: 0, Bad: 0, Terrible: 0 };
