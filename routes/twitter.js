@@ -7,22 +7,20 @@ const redis = require('redis');
 //Natural
 var stemmer = require('natural').PorterStemmer;
 var natural = require('natural');
+var tokenizer = new natural.WordTokenizer();
 var Analyzer = require('natural').SentimentAnalyzer;
 
 
 function generateChartData(tweets, chartObj) {
 
     var analyzer = new Analyzer("English", stemmer, "afinn");
-
+    
+    
     for (i in tweets.data) {
         // getSentiment expects an array of strings
         let sentence = `${tweets.data[i].text}`;
+        let sentiment = analyzer.getSentiment(tokenizer.tokenize(sentence));
 
-        let words = sentence.split(" ");
-        //console.log(words);
-        //tokenizer doenst work
-
-        let sentiment = analyzer.getSentiment(words);
 
         if (sentiment > 0.2) {
             chartObj.Great++;
