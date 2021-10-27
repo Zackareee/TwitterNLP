@@ -10,7 +10,7 @@ var natural = require('natural');
 var Analyzer = require('natural').SentimentAnalyzer;
 
 
-function generateChartData(tweets,chartObj){
+function generateChartData(tweets, chartObj) {
 
     var analyzer = new Analyzer("English", stemmer, "afinn");
 
@@ -42,7 +42,7 @@ function generateChartData(tweets,chartObj){
 
         tweets.data[i].NewPropertyName = "sentiment";     //change 0 to index for multiple tweets
         tweets.data[i].sentiment = sentiment;
-        
+
         //console.log(analyzer.getSentiment(words));
     }
 }
@@ -82,7 +82,7 @@ router.get("/:query/:qty?", async function (req, res, next) {
     })
 
     const endpoint = `https://api.twitter.com/2/tweets/search/recent?query=from:${query}&tweet.fields=created_at&expansions=author_id&user.fields=created_at&max_results=${qty}`;
-    const redisKey = `twitter:${query}`;
+    const redisKey = `twitter:${query}-${qty}`;
     const s3Key = `twitter-${query}`;
     let tweets = 0;
 
@@ -92,7 +92,7 @@ router.get("/:query/:qty?", async function (req, res, next) {
             console.log("Served from redis cache")
             const resultJSON = JSON.parse(result);
             tweets = resultJSON;
-            generateChartData(tweets,chartObj);
+            generateChartData(tweets, chartObj);
             res.render("twitter", { tweetObj: tweets, chartData: chartObj });
 
         } else {
@@ -109,19 +109,21 @@ router.get("/:query/:qty?", async function (req, res, next) {
                     tweets = response.data
 
                     //store in redis cache
-                    redisClient.setex(redisKey, 3600,JSON.stringify({
+                    redisClient.setex(redisKey, 3600, JSON.stringify({
                         source: 'Redis Cache', ...tweets,
                     }));
 
-                    // console.log(tweets);
-                    generateChartData(tweets,chartObj);
+                    //Get sentiment on tweet sample
+                    generateChartData(tweets, chartObj);
 
+                    //debug
                     console.log(chartObj);
 
-
+                    //display page
                     res.render("twitter", { tweetObj: tweets, chartData: chartObj });
 
-                }) //********CODE STOPS HERE******** */
+                    //********CODE STOPS HERE******** */
+                })
                 .catch((error) => {
                     console.log(error + ": probably search term not found")
                     res.render("error")
