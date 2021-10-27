@@ -40,9 +40,8 @@ function generateChartData(tweets, chartObj) {
             chartObj.Terrible++;
         }
 
-        tweets.data[i].NewPropertyName = "sentiment";     //change 0 to index for multiple tweets
         tweets.data[i].sentiment = sentiment;
-
+        tweets.data[i].label = 'Fully Rounded';
         //console.log(analyzer.getSentiment(words));
     }
 }
