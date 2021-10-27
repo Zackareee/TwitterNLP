@@ -7,7 +7,7 @@ head
   meta(name='author' content='')
   title SB Admin 2 - 404
   // Custom fonts for this template
-  link(href='vendor/fontawesome-free/css/all.min.css' rel='stylesheet' type='text/css')
+
   link(href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i' rel='stylesheet')
   // Custom styles for this template
   link(rel='stylesheet', href='/stylesheets/sb-admin-2.css' )
@@ -16,19 +16,19 @@ head
   // Sidebar
   ul#accordionSidebar.navbar-nav.bg-gradient-primary.sidebar.sidebar-dark.accordion
     // Sidebar - Brand
-    a.sidebar-brand.d-flex.align-items-center.justify-content-center(href='index.html')
+    a#homebtn.sidebar-brand.d-flex.align-items-center.justify-content-center(href='/')
       .sidebar-brand-icon.rotate-n-15
         i.fas.fa-laugh-wink
       .sidebar-brand-text.mx-3
-        | SB Admin 
-        sup 2
+        | Twitter 
+        sup NLP
     // Divider
     hr.sidebar-divider.my-0
     // Nav Item - Dashboard
     li.nav-item
-      a.nav-link(href='index.html')
+      a#homebtn.nav-link(href='/')
         i.fas.fa-fw.fa-tachometer-alt
-        span Dashboard
+        span Home
   // End of Sidebar
   // Content Wrapper
   #content-wrapper.d-flex.flex-column
@@ -69,6 +69,12 @@ head
     // End of Footer
   // End of Content Wrapper
   script.
+    const homeBtn = document.getElementById('homebtn');
+    homeBtn.addEventListener('click', () => {
+      window.location.href = ("/")
+    });
+
+  script.
     const searchButton = document.getElementById('search-button');
     const searchInput = document.getElementById('search-input');
     const qtyInput = document.getElementById('qty-input');
@@ -93,3 +99,4 @@ a.scroll-to-top.rounded(href='#page-top')
       .modal-footer
         button.btn.btn-secondary(type='button' data-dismiss='modal') Cancel
         a.btn.btn-primary(href='login.html') Logout
+

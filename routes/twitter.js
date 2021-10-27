@@ -12,35 +12,29 @@ var Analyzer = require('natural').SentimentAnalyzer;
 
 
 function generateChartData(tweets, chartObj) {
-
     var analyzer = new Analyzer("English", stemmer, "afinn");
-    
-    
     for (i in tweets.data) {
         // getSentiment expects an array of strings
         let sentence = `${tweets.data[i].text}`;
         let sentiment = analyzer.getSentiment(tokenizer.tokenize(sentence));
 
-
         if (sentiment > 0.2) {
             chartObj.Great++;
         }
-        else if (sentiment < 0.2 && sentiment > 0.05) {
+        else if (sentiment > 0.05) {
             chartObj.Good++;
         }
-        else if (sentiment > -0.05 && sentiment < 0.05) {
+        else if (sentiment > -0.05) {
             chartObj.Neutral++;
         }
-        else if (sentiment < -0.05 && sentiment > -0.2) {
+        else if (sentiment > -0.2) {
             chartObj.Bad++;
         }
-        else if (sentiment < -0.2) {
+        else if (sentiment <= -0.2) {
             chartObj.Terrible++;
         }
 
         tweets.data[i].sentiment = sentiment;
-        tweets.data[i].label = 'Fully Rounded';
-        //console.log(analyzer.getSentiment(words));
     }
 }
 
@@ -55,7 +49,7 @@ router.get("/:query/:qty?", async function (req, res, next) {
     const API_KEY = "BPyJmUkYDkIVh4FWtsM1Sn2RJ"
     const SECRET = "cWHTC7Gf9W7BNmYaRLfazkuwVLUSKIoIOzRsaxiQJpSk4ptPQe";
     const TOKEN = "AAAAAAAAAAAAAAAAAAAAAC7LUgEAAAAAb7O5rUKmJ0ryGMn%2Bdo879G8Ur4E%3DzgI99rheUmOefRyBbKll8tnY9oG6ExZUGhtBkyWi9XOfxctIjk";
-    const TWITTER_ENDPOINT = "https://api.twitter.com/2/tweets/search/recent";
+    const TWITTER_ENDPOINT = "https://api.twitter.com/2/tweets/search/";
 
     console.log("qty: " + qty)
     // validation
@@ -78,7 +72,7 @@ router.get("/:query/:qty?", async function (req, res, next) {
         console.log("Error " + err);
     })
 
-    const endpoint = `https://api.twitter.com/2/tweets/search/recent?query=from:${query}&tweet.fields=created_at&expansions=author_id&user.fields=created_at&max_results=${qty}`;
+    const endpoint = `${TWITTER_ENDPOINT}recent?query=from:${query}&tweet.fields=created_at&expansions=author_id&user.fields=created_at&max_results=${qty}`;
     const redisKey = `twitter:${query}-${qty}`;
     const s3Key = `twitter-${query}`;
     let tweets = 0;
@@ -96,8 +90,8 @@ router.get("/:query/:qty?", async function (req, res, next) {
                 for (loops; loops < tweets.data.length; loops++) {
                     texts += tweets.data[loops].sentiment;
                 }   
-                console.log(texts)
-                texts= (texts/loops)*100
+
+                texts= (50 + ((texts/loops)*100))
                 console.log(texts)
             }
             
