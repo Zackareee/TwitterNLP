@@ -128,9 +128,9 @@ router.get("/:query/:qty?", async function (req, res, next) {
                         for (loops; loops < tweets.data.length; loops++) {
                             texts += tweets.data[loops].sentiment;
                         }   
-                        console.log(texts)
-                        texts= (texts/loops)*100
-                        console.log(texts)
+
+                        texts= (50 + ((texts/loops)*100))
+
                     }
                     
                     res.render("dashboard", { tweetObj: tweets, chartData: chartObj, path:query, average:texts});
