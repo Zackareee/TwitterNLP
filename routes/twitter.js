@@ -66,8 +66,6 @@ router.get("/:query/:qty?", async function (req, res, next) {
         return res.render("error");
     }
 
-
-
     if (!qty) {
         qty = 10;
     }
@@ -90,7 +88,11 @@ router.get("/:query/:qty?", async function (req, res, next) {
 
     return redisClient.get(redisKey, (err, result) => {
         if (result) {
-            
+            //serve from redis cache
+            console.log("Served from redis cache")
+            const resultJSON = JSON.parse(result);
+            tweets = resultJSON;
+            generateChartData(tweets, chartObj);
             let texts = 0;
             let loops = 0;
             if (tweets.data) {
@@ -101,14 +103,8 @@ router.get("/:query/:qty?", async function (req, res, next) {
                 texts= (texts/loops)*100
                 console.log(texts)
             }
-    
             
-            //serve from redis cache
-            console.log("Served from redis cache")
-            const resultJSON = JSON.parse(result);
-            tweets = resultJSON;
-            generateChartData(tweets, chartObj);
-            res.render("dashboard", { tweetObj: tweets, chartData: chartObj, path:query, average:texts });
+            res.render("dashboard", { tweetObj: tweets, chartData: chartObj, path:query, average:texts});
 
         } else {
 
@@ -135,7 +131,18 @@ router.get("/:query/:qty?", async function (req, res, next) {
                     console.log(chartObj);
 
                     //display page
-                    res.render("twitter", { tweetObj: tweets, chartData: chartObj });
+                    let texts = 0;
+                    let loops = 0;
+                    if (tweets.data) {
+                        for (loops; loops < tweets.data.length; loops++) {
+                            texts += tweets.data[loops].sentiment;
+                        }   
+                        console.log(texts)
+                        texts= (texts/loops)*100
+                        console.log(texts)
+                    }
+                    
+                    res.render("dashboard", { tweetObj: tweets, chartData: chartObj, path:query, average:texts});
 
                     //********CODE STOPS HERE******** */
                 })
