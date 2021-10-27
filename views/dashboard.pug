@@ -1,0 +1,200 @@
+html
+    head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible' content='IE=edge')
+    meta(name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    meta(name='description' content='')
+    meta(name='author' content='')
+    title SB Admin 2 - Dashboard
+    // Custom fonts for this template
+
+    link(href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i' rel='stylesheet')
+    // Custom styles for this template
+    link(rel='stylesheet', href='/stylesheets/sb-admin-2.css' )
+    link(rel='stylesheet', href='/stylesheets/style.css')
+
+
+// Page Wrapper
+#wrapper
+  // Sidebar
+  ul#accordionSidebar.navbar-nav.bg-gradient-primary.sidebar.sidebar-dark.accordion
+    // Sidebar - Brand
+    a.sidebar-brand.d-flex.align-items-center.justify-content-center(href='index.html')
+      .sidebar-brand-icon.rotate-n-15
+        i.fas.fa-laugh-wink
+      .sidebar-brand-text.mx-3
+        | SB Admin 
+        sup 2
+    // Divider
+    hr.sidebar-divider.my-0
+    // Nav Item - Dashboard
+    li.nav-item.active
+      a.nav-link(href='index.html')
+        i.fas.fa-fw.fa-tachometer-alt
+        span Dashboard
+  // End of Sidebar
+  // Content Wrapper
+  #content-wrapper.d-flex.flex-column
+    // Main Content
+    #content
+      // Topbar
+      nav.navbar.navbar-expand.navbar-light.bg-white.topbar.mb-4.static-top.shadow
+        // Sidebar Toggle (Topbar)
+        button#sidebarToggleTop.btn.btn-link.d-md-none.rounded-circle.mr-3
+          i.fa.fa-bars
+        // Topbar Search
+
+        
+        form.d-none.d-sm-inline-block.form-inline.mr-auto.ml-md-3.my-2.my-md-0.mw-100.navbar-search
+          .input-group
+            input#search-input.form-control.bg-light.border-0.small(type='text' placeholder='Twitter Handle' aria-label='Search' aria-describedby='basic-addon2')
+            input#qty-input.form-control.bg-light.border-0.small(type='text' placeholder='Upper return limit' aria-label='Search' aria-describedby='basic-addon2')
+            .input-group-append
+              button#search-button.btn.btn-primary(type='button')
+                i.fas.fa-search.fa-sm
+
+
+
+      // End of Topbar
+      // Begin Page Content
+
+      .container-fluid
+        // Page Heading
+        // Content Row
+        .row
+          // Earnings (Monthly) Card Example
+          .col-xl-5.col-md-6.mb-4
+            .card.border-left-primary.shadow.h-100.py-2
+              .card-body
+                .row.no-gutters.align-items-center
+                  .col.mr-2
+                    .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1
+                      | Returned Tweets
+                    .h5.mb-0.font-weight-bold.text-gray-800 #{Object.keys(tweetObj.data).length}
+                  .col-auto
+                    i.fas.fa-calendar.fa-2x.text-gray-300
+          // Earnings (Monthly) Card Example
+          .col-xl-5.col-md-6.mb-4
+            .card.border-left-success.shadow.h-100.py-2
+              .card-body
+                .row.no-gutters.align-items-center
+                  .col.mr-2
+                    .text-xs.font-weight-bold.text-success.text-uppercase.mb-1
+                      | Average Sentimentality
+                    .h5.mb-0.font-weight-bold.text-gray-800 #{parseFloat(average).toFixed(2)}%
+                  .col-auto
+                    i.fas.fa-dollar-sign.fa-2x.text-gray-300
+        // Content Row
+        .row
+          // Pie Chart
+          .col-xl-10.col-md-12.mb-12
+            .card.shadow.mb-4
+              .card-header.py-3.d-flex.flex-row.align-items-center.justify-content-between
+                h6.m-0.font-weight-bold.text-primary @#{path.toUpperCase()} Sentimentality
+              // Card Body
+              .card-body
+                script(src ="https://cdn.jsdelivr.net/npm/chart.js")
+                div
+                    canvas#myChart(width='400' height='150')
+
+        
+
+
+        // Content Row
+
+        for val, index in tweetObj.data
+          .row
+            .col-xl-10.col-md-12
+
+              mixin content
+                .card-body
+                  .row.no-gutters.align-items-center
+                    .col.mr-2
+                      .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 @#{path.toUpperCase()}
+                      .h5.mb-0.font-weight-bold.text-gray-800= tweetObj.data[index].text
+                    .col-auto
+                      i.fas.fa-calendar.fa-2x.text-gray-300
+
+              if tweetObj.data[index].sentiment > 0.2
+                .card.border-left-success.shadow.h-100.py-2
+                  +content
+              else if tweetObj.data[index].sentiment > 0.05
+                .card.border-left-info.shadow.h-100.py-2
+                  +content
+              else if tweetObj.data[index].sentiment > -0.05
+                .card.border-left-warning.shadow.h-100.py-2
+                  +content
+              else if tweetObj.data[index].sentiment > -0.2
+                .card.border-left-danger.shadow.h-100.py-2
+                  +content
+              else
+                .card.border-left-dark.shadow.h-100.py-2 
+                  +content               
+
+                
+                
+                    
+           
+
+      // /.container-fluid
+    // End of Main Content
+    // Footer
+    footer.sticky-footer.bg-white
+      .container.my-auto
+        .copyright.text-center.my-auto
+          span Copyright &copy; Your Website 2021
+
+        
+    script.
+        const searchButton = document.getElementById('search-button');
+        const searchInput = document.getElementById('search-input');
+        const qtyInput = document.getElementById('qty-input');
+        searchButton.addEventListener('click', () => {
+        const inputValue = searchInput.value;
+        const qtyValue = qtyInput.value;
+        window.location.href = ("/twitter/" + inputValue + "/" + qtyValue)
+        });
+
+    script.
+        let tweets = !{JSON.stringify(tweetObj)};
+        console.log(tweets);
+
+        let chData = !{JSON.stringify(chartData)}
+        console.log(chData)
+
+
+        let ctx = document.getElementById('myChart');
+        let myChart = new Chart(ctx,{
+            type: 'bar',
+        data: {
+            labels: ['Great', 'Good', 'Neutral', 'Bad', 'Terrible'], //this
+            datasets: [{
+                label: 'Sentiment values for tweets',
+                data: [chData.Great, chData.Good, chData.Neutral, chData.Bad, chData.Terrible], //and this
+                backgroundColor: [
+                    'rgba(92, 184, 92, 0.2)',
+                    'rgba(91, 192, 222, 0.2)',
+                    'rgba(240, 173, 78, 0.2)',
+                    'rgba(217, 83, 79, 0.2)',
+                    'rgba(41, 43, 44, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(92, 184, 92, 1)',
+                    'rgba(91, 192, 222, 1)',
+                    'rgba(240, 173, 78, 1)',
+                    'rgba(217, 83, 79, 1)',
+                    'rgba(41, 43, 44, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+        });

@@ -52,10 +52,7 @@ router.get("/:query/:qty?", async function (req, res, next) {
             res.render("error")
         })
 
-   
 
-
-    console.log(tweets);
 
     var tokenizer = new natural.WordTokenizer();
     var analyzer = new Analyzer("English", stemmer, "afinn");
@@ -71,7 +68,7 @@ router.get("/:query/:qty?", async function (req, res, next) {
         let sentence = `${tweets.data[i].text}`;
 
         let words = sentence.split(" ");
-        console.log(words);
+
         //tokenizer doenst work
 
         let sentiment = analyzer.getSentiment(words);
@@ -95,14 +92,23 @@ router.get("/:query/:qty?", async function (req, res, next) {
         tweets.data[i].NewPropertyName = "sentiment";     //change 0 to index for multiple tweets
         tweets.data[i].sentiment = sentiment;
 
-        console.log(analyzer.getSentiment(words));
+        // console.log(analyzer.getSentiment(words));
 
 
 
     }
-
-    console.log(chartObj);
-    res.render("twitter", { tweetObj: tweets, chartData: chartObj });
+    let texts = 0;
+    let loops = 0;
+    if (tweets.data) {
+        for (loops; loops < tweets.data.length; loops++) {
+            texts += tweets.data[loops].sentiment;
+        }   
+        console.log(texts)
+        texts= (texts/loops)*100
+        console.log(texts)
+    }
+    
+    res.render("dashboard", { tweetObj: tweets, chartData: chartObj, path:query, average:texts});
 })
 
 module.exports = router;
