@@ -19,19 +19,19 @@ html
   // Sidebar
   ul#accordionSidebar.navbar-nav.bg-gradient-primary.sidebar.sidebar-dark.accordion
     // Sidebar - Brand
-    a.sidebar-brand.d-flex.align-items-center.justify-content-center(href='index.html')
+    a#homebtn.sidebar-brand.d-flex.align-items-center.justify-content-center(href="/")
       .sidebar-brand-icon.rotate-n-15
         i.fas.fa-laugh-wink
       .sidebar-brand-text.mx-3
-        | SB Admin 
-        sup 2
+        | Twitter 
+        sup NLP
     // Divider
     hr.sidebar-divider.my-0
     // Nav Item - Dashboard
     li.nav-item.active
-      a.nav-link(href='index.html')
+      a#homebtn.nav-link(href='/')
         i.fas.fa-fw.fa-tachometer-alt
-        span Dashboard
+        span Home
   // End of Sidebar
   // Content Wrapper
   #content-wrapper.d-flex.flex-column
@@ -147,9 +147,15 @@ html
         const searchInput = document.getElementById('search-input');
         const qtyInput = document.getElementById('qty-input');
         searchButton.addEventListener('click', () => {
-        const inputValue = searchInput.value;
-        const qtyValue = qtyInput.value;
-        window.location.href = ("/twitter/" + inputValue + "/" + qtyValue)
+          const inputValue = searchInput.value;
+          const qtyValue = qtyInput.value;
+          window.location.href = ("/twitter/" + inputValue + "/" + qtyValue)
+        });
+
+    script.
+        const homeBtn = document.getElementById('homebtn');
+        homeBtn.addEventListener('click', () => {
+          window.location.href = ("/")
         });
 
     script.
