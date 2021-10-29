@@ -10,12 +10,15 @@ var natural = require('natural');
 var tokenizer = new natural.WordTokenizer();
 var Analyzer = require('natural').SentimentAnalyzer;
 
+let wordCloud = [];
+let words = [];
 
 function generateChartData(tweets, chartObj) {
     var analyzer = new Analyzer("English", stemmer, "afinn");
     for (i in tweets.data) {
         // getSentiment expects an array of strings
         let sentence = `${tweets.data[i].text}`;
+        words.push(tokenizer.tokenize(sentence));
         let sentiment = analyzer.getSentiment(tokenizer.tokenize(sentence));
 
         if (sentiment > 0.2) {
@@ -35,6 +38,31 @@ function generateChartData(tweets, chartObj) {
         }
 
         tweets.data[i].sentiment = sentiment;
+
+        for (i in words){
+            for (j in words[i]){
+                let word = words[i][j];
+                wordCloud.push({text: word, size: 0})
+            }
+        }
+        
+
+    
+
+        
+        
+
+
+        // if (wordCloud[i] && !(wordCloud[i]["text"] !== words[i][j])){
+        //     wordCloud[i].value ++;
+        // }
+        // else{
+        //     wordCloud.push(Object.create({text: words[i][j], value: 1}))
+        // }
+
+        console.log(wordCloud);
+        
+
     }
 }
 
@@ -93,6 +121,8 @@ router.get("/:query/:qty?", async function (req, res, next) {
                 texts= (50 + ((texts/loops)*100))
                 console.log(texts)
             }
+
+
             
             res.render("dashboard", { tweetObj: tweets, chartData: chartObj, path:query, average:texts});
 
@@ -131,7 +161,8 @@ router.get("/:query/:qty?", async function (req, res, next) {
                         texts= (50 + ((texts/loops)*100))
 
                     }
-                    
+
+                
                     res.render("dashboard", { tweetObj: tweets, chartData: chartObj, path:query, average:texts});
 
                     //********CODE STOPS HERE******** */
