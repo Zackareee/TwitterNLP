@@ -90,7 +90,7 @@ html
           .col-xl-10.col-md-12.mb-12
             .card.shadow.mb-4
               .card-header.py-3.d-flex.flex-row.align-items-center.justify-content-between
-                h6.m-0.font-weight-bold.text-primary @#{path.toUpperCase()} Sentimentality
+                h6.m-0.font-weight-bold.text-primary #{path.toUpperCase()} Sentimentality
               // Card Body
               .card-body
                 script(src ="https://cdn.jsdelivr.net/npm/chart.js")
@@ -107,7 +107,7 @@ html
                 .card-body
                   .row.no-gutters.align-items-center
                     .col.mr-2
-                      .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 @#{path.toUpperCase()}
+                      .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 #{path.toUpperCase()}
                       .h5.mb-0.font-weight-bold.text-gray-800= tweetObj.data[index].text
                     .col-auto
                       i.fas.fa-calendar.fa-2x.text-gray-300
@@ -149,7 +149,7 @@ html
         searchButton.addEventListener('click', () => {
           const inputValue = searchInput.value;
           const qtyValue = qtyInput.value;
-          window.location.href = ("/twitter/" + inputValue + "/" + qtyValue)
+          window.location.href = ("/twitter/" + encodeURIComponent(inputValue) + "/" + qtyValue)
         });
 
     script.

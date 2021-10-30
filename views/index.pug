@@ -38,5 +38,5 @@ script.
   searchButton.addEventListener('click', () => {
   const inputValue = searchInput.value;
   const qtyValue = qtyInput.value;
-  window.location.href = ("/twitter/" + inputValue + "/" + qtyValue)
+  window.location.href = ("/twitter/" + encodeURIComponent(inputValue) + "/" + qtyValue)
     });

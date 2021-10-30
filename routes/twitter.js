@@ -10,6 +10,9 @@ var natural = require('natural');
 var tokenizer = new natural.WordTokenizer();
 var Analyzer = require('natural').SentimentAnalyzer;
 
+// if (!query.match("^[a-zA-Z0-9_]*$")) {
+//     return res.render("error");
+// }
 
 function generateChartData(tweets, chartObj) {
     var analyzer = new Analyzer("English", stemmer, "afinn");
@@ -50,12 +53,10 @@ router.get("/:query/:qty?", async function (req, res, next) {
     const SECRET = "cWHTC7Gf9W7BNmYaRLfazkuwVLUSKIoIOzRsaxiQJpSk4ptPQe";
     const TOKEN = "AAAAAAAAAAAAAAAAAAAAAC7LUgEAAAAAb7O5rUKmJ0ryGMn%2Bdo879G8Ur4E%3DzgI99rheUmOefRyBbKll8tnY9oG6ExZUGhtBkyWi9XOfxctIjk";
     const TWITTER_ENDPOINT = "https://api.twitter.com/2/tweets/search/";
-
+    console.log(`recent?query=${encodeURIComponent(query)}&max_results=${qty}`)
     console.log("qty: " + qty)
     // validation
-    if (!query.match("^[a-zA-Z0-9_]*$")) {
-        return res.render("error");
-    }
+
 
     if (!qty) {
         qty = 10;
@@ -71,12 +72,16 @@ router.get("/:query/:qty?", async function (req, res, next) {
     redisClient.on('error', (err) => {
         console.log("Error " + err);
     })
+    let endpoint = "";
+    if(query.substring(0,1) === "@"){ endpoint = `${TWITTER_ENDPOINT}recent?query=from:${query.substring(1)}&max_results=${qty}`;}
+    else {endpoint = `${TWITTER_ENDPOINT}recent?query=${encodeURIComponent(query)}&max_results=${qty}`;}
+    
 
-    const endpoint = `${TWITTER_ENDPOINT}recent?query=from:${query}&tweet.fields=created_at&expansions=author_id&user.fields=created_at&max_results=${qty}`;
+
     const redisKey = `twitter:${query}-${qty}`;
     const s3Key = `twitter-${query}`;
     let tweets = 0;
-
+    
     return redisClient.get(redisKey, (err, result) => {
         if (result) {
             //serve from redis cache
@@ -94,7 +99,7 @@ router.get("/:query/:qty?", async function (req, res, next) {
                 texts= (50 + ((texts/loops)*100))
                 console.log(texts)
             }
-            
+            console.log(tweets)
             res.render("dashboard", { tweetObj: tweets, chartData: chartObj, path:query, average:texts});
 
         } else {
