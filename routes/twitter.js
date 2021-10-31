@@ -41,11 +41,12 @@ function generateChartData(tweets, chartObj) {
     words = []
     var analyzer = new Analyzer("English", stemmer, "afinn");
     for (i in tweets.data) {
-        // getSentiment expects an array of strings
+
         let sentence = `${tweets.data[i].text}`;
         words.push(tokenizer.tokenize(sentence));
         let sentiment = analyzer.getSentiment(tokenizer.tokenize(sentence));
 
+        //sort into catergories
         if (sentiment > 0.2) {
             chartObj.Great++;
         }
@@ -65,10 +66,6 @@ function generateChartData(tweets, chartObj) {
         tweets.data[i].sentiment = sentiment;
     }
 
-    
-
-
-    
     //counting words for the wordcloud
     onewords= flatten(words)
     const counts = {};
@@ -77,16 +74,13 @@ function generateChartData(tweets, chartObj) {
         const [keys, values] = entry;
         wordCloud.push({ word: keys, freq: values*10 });
       });
-
-
 }
 
-let texts = 0; //global variable
+let texts = 0;
 
 function prepareData(tweets, chartObj) {
     texts= 0;
     generateChartData(tweets, chartObj);
-
 
     let loops = 0;
     if (tweets.data) {
@@ -98,11 +92,9 @@ function prepareData(tweets, chartObj) {
     }
 }
 
-
 router.get("/:query/:qty?", async function (req, res, next) {
 
     let chartObj = { Great: 0, Good: 0, Neutral: 0, Bad: 0, Terrible: 0 };
-
     let { query, qty } = req.params;
 
     const API_KEY = "BPyJmUkYDkIVh4FWtsM1Sn2RJ"
@@ -135,11 +127,9 @@ router.get("/:query/:qty?", async function (req, res, next) {
     if(query.substring(0,1) === "@"){ endpoint = `${TWITTER_ENDPOINT}recent?query=from:${query.substring(1)}&max_results=${qty}`;}
     else {endpoint = `${TWITTER_ENDPOINT}recent?query=${encodeURIComponent(query)}&max_results=${qty}`;}
 
-    
     const redisKey = `twitter:${query}-${qty}`;
     const s3Key = `twitter-${query}-${qty}`;
     let tweets = 0;
-
 
     return redisClient.get(redisKey, (err, result) => {
         if (result) {
@@ -153,6 +143,7 @@ router.get("/:query/:qty?", async function (req, res, next) {
             const params = { Bucket: bucketName, Key: s3Key };
             return new AWS.S3({ apiVersion: '2006-03-01' }).getObject(params, (err, result) => {
                 if (result) {
+                    
                     //serve from s3 and store in redis
                     console.log("Serving from s3");
                     tweets = JSON.parse(result.Body);
@@ -172,8 +163,7 @@ router.get("/:query/:qty?", async function (req, res, next) {
                             }
                         })
                         .then((response) => {
-
-                            //********************CODE GOES HERE **************************** */                   
+                  
                             tweets = response.data
 
                             //store in s3
@@ -190,11 +180,9 @@ router.get("/:query/:qty?", async function (req, res, next) {
                                 source: 'Redis Cache', ...tweets,
                             }));
 
-
                             prepareData(tweets, chartObj)
                             res.render("dashboard", { tweetObj: tweets, chartData: chartObj, path: query, average: texts, cloud:wordCloud });
 
-                            //********CODE STOPS HERE******** */
                         })
                         .catch((error) => {
                             console.log(error + ": probably search term not found")
@@ -204,11 +192,6 @@ router.get("/:query/:qty?", async function (req, res, next) {
             });
 
         }
-
-
-
-
-
     })
 })
 
