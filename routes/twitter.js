@@ -79,6 +79,7 @@ function generateChartData(tweets, chartObj) {
 let texts = 0;
 
 function prepareData(tweets, chartObj) {
+
     texts= 0;
     generateChartData(tweets, chartObj);
 
@@ -104,7 +105,7 @@ router.get("/:query/:qty?", async function (req, res, next) {
 
     console.log("qty: " + qty)
     // validation
-    if (!query.match("^[a-zA-Z0-9_]*$")) {
+    if (!query.match("^[a-zA-Z0-9_#]*$")) {
         return res.render("error");
     }
 
